@@ -1,4 +1,3 @@
-import numpy
 import pygame
 
 print('hello')
