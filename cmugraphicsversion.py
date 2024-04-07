@@ -213,7 +213,7 @@ def groceryOneScreen_redrawAll(app):
     drawButton(app)
     if app.recordButton == True:
         drawLabel("Recording...", 850, 100, size = 16)
-        drawLabel(f'{app.recordedText}', app.width/2, app.height/2, fill='black', size = 30)
+        drawLabel(f'Are you using card or cash, or Flex today?', app.width/2, app.height/2, fill='black', size = 30)
     if app.correctPhraseSaid:
         drawLabel('CORRECT PHRASE', app.width/2, app.height/2, fill='green')
     elif app.correctPhraseSaid == False and app.recordButton == True:
