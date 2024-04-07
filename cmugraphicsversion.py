@@ -23,6 +23,10 @@ def newGame(app):
     app.groceryHomeThreeSelected = False
     app.winGame = False
     app.loseGame = False
+    # map variables
+    app.tepper = False
+    app.scotty = False
+    app.cuc = False
     
 ####################################################
 # Code used by multiple screens
@@ -52,12 +56,80 @@ def helpScreen_onKeyPress(app, key):
 # mapScreen
 ####################################################
 
-def mapScreen_redrawAll(app):
-    drawScreenTitle(app, 'Maps Screen')
-    drawRect(0, 0, 200, 200, fill='blue')
+# def mapScreen_redrawAll(app):
+#     drawScreenTitle(app, 'Maps Screen')
+#     drawRect(0, 0, 200, 200, fill='blue')
 
 def mapScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
+ 
+def mapScreen_redrawAll(app):
+    drawRect(0, 0, app.width, app.height, fill = 'limeGreen')
+    drawLabel('Map of CMU', app.width/2, 40, size = 25, bold = True, font = 'montserrat')
+    drawRect(0, app.height/2 - 30, app.width, 80, fill = 'gray')
+    drawLine(0, app.height/2 + 10, app.width, app.height/2 + 10, fill = 'black', dashes = True, lineWidth = 2)
+    drawLine(0, app.height/2 - 30, app.width, app.height/2 - 30, fill = 'black', lineWidth = 3)
+    drawLine(0, app.height/2 + 50, app.width, app.height/2 + 50, fill = 'black',  lineWidth = 3)
+ 
+    drawRect(25, 75, 100, 175, fill = 'lightCyan')   
+    drawRect(150, 75, 100, 50, fill = 'lightCyan')
+    drawRect(150, 150, 100, 100, fill = 'lightCyan')
+ 
+    tepColor = 'darkOrange' if app.tepper == True else 'tomato'
+    drawRect(275, 75, 200, 175, fill = tepColor)
+    drawLabel("Visit Tepper!", 375, 75 + 175/2, size = 20, font = 'montserrat')
+    drawRect(500, 150, 100, 100, fill = 'lightCyan')
+    drawRect(500, 75, 100, 50, fill = 'lightCyan')
+ 
+    scottyColor = 'darkOrange' if app.scotty == True else 'tomato'
+    drawRect(625, 75, 250, 125, fill = scottyColor)
+    drawLabel("Visit Scotty's!", 625 + 250/2, 75 + 125/2, size = 20, font = 'montserrat')
+    drawRect(625, 225, 75, 25, fill = 'lightCyan')
+    drawRect(725, 225, 150, 25, fill = 'lightCyan')
+ 
+    drawRect(25, 375, 100, 175, fill = 'lightCyan')
+    drawRect(150, 500, 100, 50, fill = 'lightCyan')
+    drawRect(150, 375, 100, 100, fill = 'lightCyan')
+ 
+    cucColor = 'darkOrange' if app.cuc == True else 'tomato'
+    drawRect(275, 375, 325, 175, fill = cucColor)
+    drawLabel("Visit the CUC!", 275 + 325/2, 375 + 175/2, size = 20, font = 'montserrat')
+    drawRect(625, 375, 100, 50, fill = 'lightCyan')
+    drawRect(625, 450, 100, 100, fill = 'lightCyan')
+    drawRect(750, 375, 125, 125, fill = 'lightCyan')
+    drawRect(750, 525, 50, 25, fill = 'lightCyan')
+    drawRect(825, 525, 50, 25, fill = 'lightCyan')
+ 
+def mapScreen_onMouseMove(app, mouseX, mouseY):
+    isTepperSelected(app, mouseX, mouseY)
+    isScottySelected(app, mouseX, mouseY)
+    isCUCSelected(app, mouseX, mouseY)
+ 
+def mapScreen_onMousePress(app, mouseX, mouseY):
+    if app.tepper == True:
+        pass
+    elif app.scotty == True:
+        setActiveScreen('groceryHomeScreen')
+    elif app.cuc == True:
+        pass
+ 
+def isTepperSelected(app, mouseX, mouseY):
+    if 275 <= mouseX <= 475 and 75 <= mouseY <= 250:
+        app.tepper = True
+    else:
+        app.tepper = False
+ 
+def isScottySelected(app, mouseX, mouseY):
+    if 625 <= mouseX <= 875 and 75 <= mouseY <= 200:
+        app.scotty = True
+    else:
+        app.scotty = False
+ 
+def isCUCSelected(app, mouseX, mouseY):
+    if 275 <= mouseX <= 600 and 375 <= mouseY <= 550:
+        app.cuc = True
+    else:
+        app.cuc = False
 
 ####################################################
 # groceryHomeScreen
