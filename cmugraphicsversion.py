@@ -39,6 +39,7 @@ def newGame(app):
     app.cuc = False
     # recording
     app.recordButton = False
+    app.correctPhraseSaid = False
     
 ####################################################
 # Code used by multiple screens
@@ -66,7 +67,7 @@ def helpScreen_onKeyPress(app, key):
  
 def helpScreen_redrawAll(app):
     drawScreenTitle(app, 'Help Screen')
-    drawImage(app.url, -75, -265)
+    #drawImage(app.url, -75, -265)
     color = 'lightCyan' if app.play else 'paleTurquoise'
     drawRect(app.width/2 - 125, 525, 250, 50, fill = color, 
         border = 'midnightBlue', borderWidth = 8)
@@ -206,9 +207,18 @@ def groceryHomeScreen_onKeyPress(app, key):
 def groceryOneScreen_redrawAll(app):
     drawLabel('Cashier', app.width/2, app.height/2)
     drawImage(app.cashierUrl, 100, -50)
+    drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
+    drawRect(75, 150, 200, 100, fill='orangeRed')
+    drawLabel('nǐ xiǎng zěn yàng tāo qián?', 175, 200, fill='black')
     drawButton(app)
     if app.recordButton == True:
         drawLabel("Recording...", 850, 100, size = 16)
+        drawLabel(f'{app.recordedText}', app.width/2, app.height/2, fill='black', size = 30)
+    if app.correctPhraseSaid:
+        drawLabel('CORRECT PHRASE', app.width/2, app.height/2, fill='green')
+    elif app.correctPhraseSaid == False and app.recordButton == True:
+        drawLabel('WRONG PHRASE', app.width/2, app.height/2, fill='green')
+
 
 def drawButton(app):
     drawCircle(850, 50, 20, fill='red')
@@ -229,8 +239,13 @@ def groceryOneScreen_onMousePress(app, mouseX, mouseY):
     if distance(cx, cy, mouseX, mouseY) <= r:
         # yes, it is inside the circle!
         # so increase the counter
-        record(app)
+        app.recordedText = record(app)
+        print(app.recordedText)
         app.recordButton = True
+        app.compText = '我要用卡掏'
+        app.correctPhraseSaid = findHowAccurateRecording(app.recordedText, app.compText)
+        
+            
 
 def record(app):
     FORMAT = pyaudio.paInt16
@@ -274,7 +289,7 @@ def record(app):
         wf.writeframes(b''.join(frames))
     
     print("Audio saved to", WAVE_OUTPUT_FILENAME)
-    translate(app)
+    return translate(app)
 
 def translate(app):
     if app.language == 'chinese':
@@ -298,11 +313,21 @@ def chineseText():
         print("Recognizing...")
         # Use Google's speech recognition with Chinese language parameter
         text = recognizer.recognize_google(audio, language='zh-CN')  # 'zh-CN' for Simplified Chinese
-        print(text)
+        return text
     except sr.UnknownValueError:
-        print("Sorry, I couldn't understand what was said in the audio.")
+        return "Sorry, I couldn't understand what was said in the audio."
     except sr.RequestError as e:
-        print("Sorry, I couldn't request results from the speech recognition service; {0}".format(e))
+        return "Sorry, I couldn't request results from the speech recognition service; {0}".format(e)
+
+def findHowAccurateRecording(recText, compText):
+    accurateWordCount = 0
+    accuracy = None
+    print(recText)
+    for i in range(min(len(recText), len(compText))):
+        if recText[i] == compText[i]:
+            accurateWordCount += 1
+    accuracy = accurateWordCount/len(compText)
+    return accuracy > .4
 
 ####################################################
 # groceryTwoScreen
