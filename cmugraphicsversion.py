@@ -12,7 +12,7 @@ def onAppStart(app):
     app.themes = ["Grocery"]
     app.themeIndex= 0
     app.currTheme = "Grocery"
-    setActiveScreen('helpScreen')
+    # setActiveScreen('helpScreen')
     newGame(app)
 
 def newGame(app):
@@ -45,7 +45,7 @@ def helpScreen_redrawAll(app):
     drawScreenTitle(app, 'Help Screen')
 
 ####################################################
-# setMapsScreen
+# setMapScreen
 ####################################################
 
 def setMapScreen_onScreenActivate(app):
@@ -61,19 +61,22 @@ to do something each time the user activates this screen.
 
 def setMapScreen_redrawAll(app):
     # instructions
-    pass
     drawScreenTitle(app, 'Set Maps Screen')
+    pass
+
+def mapScreen_redrawAll(app):
+    drawRect(0, 0, 200, 200, fill='blue')
 
 
 ####################################################
-# setThemeScreen
+# setGroceryHomeScreen
 ####################################################
 
-def setThemeScreen_redrawAll(app):
-    drawScreenTitle(app, 'Set Theme Screen')
+def setGroceryHomeScreen_redrawAll(app):
+    drawScreenTitle(app, 'Set Grocery Screen')
     
 
-def setThemeScreen_onKeyPress(app, key):
+def setGroceryHomeScreen_onKeyPress(app, key):
     pass
 
 ####################################################
