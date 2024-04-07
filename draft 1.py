@@ -8,6 +8,7 @@ clock = pygame.time.Clock()
 
 test_surface = pygame.Surface((800, 400))
 test_surface.fill('Red')
+second_test_surface = pygame.image.load('graphics/Sky.png') # location
 
 while True:
     for event in pygame.event.get():
