@@ -4,6 +4,9 @@ import random
 import pyaudio
 import wave
 import speech_recognition as sr
+from gtts import gTTS
+import os
+
 
 ####################################################
 # onAppStart: called only once when app is launched
@@ -40,6 +43,79 @@ def newGame(app):
     # recording
     app.recordButton = False
     app.correctPhraseSaid = False
+
+def record(app):
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 44100
+    CHUNK = 1024
+    RECORD_SECONDS = 10
+    WAVE_OUTPUT_FILENAME = "speech.wav"
+    
+    # Initialize PyAudio
+    audio = pyaudio.PyAudio()
+    
+    # Open recording stream
+    stream = audio.open(format=FORMAT,
+                        channels=CHANNELS,
+                        rate=RATE,
+                        input=True,
+                        frames_per_buffer=CHUNK)
+    
+    # drawLabel("Recording...", 850, 60, size = 20)
+    
+    frames = []
+
+    # Record audio in chunks
+    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+        data = stream.read(CHUNK)
+        frames.append(data)
+    
+    print("Finished recording.")
+    
+    # Stop and close the stream
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
+
+    # Save the recorded audio to a file
+    with wave.open(WAVE_OUTPUT_FILENAME, 'wb') as wf:
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(audio.get_sample_size(FORMAT))
+        wf.setframerate(RATE)
+        wf.writeframes(b''.join(frames))
+    
+    print("Audio saved to", WAVE_OUTPUT_FILENAME)
+    return translate(app)
+
+def translate(app):
+    if app.language == 'chinese':
+        return chineseText()
+
+def chineseText():
+    # Initialize the recognizer
+    recognizer = sr.Recognizer()
+    
+    # Specify the path to the WAV file containing Chinese speech
+    wav_file_path = "speech.wav"
+
+    # Load the audio file
+    with sr.AudioFile(wav_file_path) as source:
+        # Adjust for ambient noise if necessary
+        recognizer.adjust_for_ambient_noise(source)
+        # Record the audio from the WAV file
+        audio = recognizer.record(source)
+
+    try:
+        print("Recognizing...")
+        # Use Google's speech recognition with Chinese language parameter
+        text = recognizer.recognize_google(audio, language='zh-CN')  # 'zh-CN' for Simplified Chinese
+        return text
+    except sr.UnknownValueError:
+        return "Sorry, I couldn't understand what was said in the audio."
+    except sr.RequestError as e:
+        return "Sorry, I couldn't request results from the speech recognition service; {0}".format(e)
+
     
 ####################################################
 # Code used by multiple screens
@@ -210,15 +286,15 @@ def groceryOneScreen_redrawAll(app):
     drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
     drawRect(75, 150, 200, 100, fill='orangeRed')
     drawLabel('nǐ xiǎng zěn yàng tāo qián?', 175, 200, fill='black')
+    # initialMessage(app)
     drawButton(app)
     if app.recordButton == True:
         drawLabel("Recording...", 850, 100, size = 16)
-        drawLabel(f'Are you using card or cash, or Flex today?', app.width/2, app.height/2, fill='black', size = 30)
+        drawLabel(f"I'm going to pay with card.", app.width/2, app.height/2+100, fill='black', size = 30)
     if app.correctPhraseSaid:
         drawLabel('CORRECT PHRASE', app.width/2, app.height/2, fill='green')
     elif app.correctPhraseSaid == False and app.recordButton == True:
         drawLabel('WRONG PHRASE', app.width/2, app.height/2, fill='green')
-
 
 def drawButton(app):
     drawCircle(850, 50, 20, fill='red')
@@ -242,10 +318,18 @@ def groceryOneScreen_onMousePress(app, mouseX, mouseY):
         app.recordedText = record(app)
         print(app.recordedText)
         app.recordButton = True
-        app.compText = '我要用卡掏'
+        app.compText = '我要用卡掏' #CHANGE THIS
         app.correctPhraseSaid = findHowAccurateRecording(app.recordedText, app.compText)
-        
-            
+
+# def initialMessage(app):
+#     text = '你想怎样掏钱'
+#     textToSpeech(app, text)
+
+# def textToSpeech(app, text):
+#     tts = gTTS(text=text, lang='zh-cn') # create instance of gTTS class
+#     tts.save("output.mp3") # save audio file
+#     os.system("start output.mp3") # play audio file
+
 
 def record(app):
     FORMAT = pyaudio.paInt16
@@ -333,8 +417,35 @@ def findHowAccurateRecording(recText, compText):
 # groceryTwoScreen
 ####################################################
 
+def groceryTwoScreen_onAppStart(app):
+    app.compG2Text = '我能来一个汉堡吗?'
 def groceryTwoScreen_redrawAll(app):
     drawLabel('Order To-Go', app.width/2, app.height/2)
+    drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
+    drawRect(75, 150, 200, 100, fill='orangeRed')
+    drawLabel('nǐ hǎo, nǐ jīn tiān xiǎng chī shén me?', 175, 200, fill='black')
+    # initialMessage(app)
+    drawButton(app)
+    if app.recordButton == True:
+        drawLabel("Recording...", 850, 100, size = 16)
+        drawLabel(f'Can I have a burger with lettuce and cheese but not tomatoes?', app.width/2, app.height/2, fill='black', size = 30)
+    if app.correctPhraseSaid:
+        drawLabel('CORRECT PHRASE', app.width/2, app.height/2, fill='green')
+    elif app.correctPhraseSaid == False and app.recordButton == True:
+        drawLabel('WRONG PHRASE', app.width/2, app.height/2, fill='green')
+
+def groceryTwoScreen_onMousePress(app, mouseX, mouseY):
+    cx = 850
+    cy = 50
+    r = 25
+    # test for intersection
+    if distance(cx, cy, mouseX, mouseY) <= r:
+        # yes, it is inside the circle!
+        # so increase the counter
+        app.recordedG2Text = record(app)
+        print(app.recordedG2Text)
+        app.recordButton = True
+        app.correctPhraseSaid = findHowAccurateRecording(app.recordedG2Text, app.compG2Text)
 
 def groceryTwoScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
@@ -343,8 +454,37 @@ def groceryTwoScreen_onKeyPress(app, key):
 # groceryThreeScreen
 ####################################################
 
+def groceryThreeScreen_onAppStart(app):
+    app.compG2Text = '我能来一个汉堡吗?'
+
 def groceryThreeScreen_redrawAll(app):
     drawLabel('Small Talk', app.width/2, app.height/2)
+    drawLabel('Order To-Go', app.width/2, app.height/2)
+    drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
+    drawRect(75, 150, 200, 100, fill='orangeRed')
+    drawLabel('nǐ hǎo, nǐ jīn tiān xiǎng chī shén me?', 175, 200, fill='black')
+    # initialMessage(app)
+    drawButton(app)
+    if app.recordButton == True:
+        drawLabel("Recording...", 850, 100, size = 16)
+        drawLabel(f'Can I have a burger with lettuce and cheese but not tomatoes?', app.width/2, app.height/2, fill='black', size = 30)
+    if app.correctPhraseSaid:
+        drawLabel('CORRECT PHRASE', app.width/2, app.height/2, fill='green')
+    elif app.correctPhraseSaid == False and app.recordButton == True:
+        drawLabel('WRONG PHRASE', app.width/2, app.height/2, fill='green')
+
+def groceryThreeScreen_onMousePress(app, mouseX, mouseY):
+    cx = 850
+    cy = 50
+    r = 25
+    # test for intersection
+    if distance(cx, cy, mouseX, mouseY) <= r:
+        # yes, it is inside the circle!
+        # so increase the counter
+        app.recordedG2Text = record(app)
+        print(app.recordedG2Text)
+        app.recordButton = True
+        app.correctPhraseSaid = findHowAccurateRecording(app.recordedG2Text, app.compG2Text)
 
 def groceryThreeScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
