@@ -1,6 +1,9 @@
 
 from cmu_graphics import *
 import random
+import pyaudio
+import wave
+import speech_recognition as sr
 
 ####################################################
 # onAppStart: called only once when app is launched
@@ -16,6 +19,7 @@ def onAppStart(app):
     # photos
     app.scottyUrl = "https://www.cmu.edu/dining/news/2023/scottys-market-rendering_900x600-min.jpg"
     app.cashierUrl = "https://drive.google.com/file/d/1uV2YXyxZsrHtdrOJrNggy-GNp1yDlHYC/view?usp=sharing"
+    app.language = 'chinese'
     newGame(app)
 
 def newGame(app):
@@ -185,7 +189,90 @@ def drawButton(app):
 def groceryOneScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
 
-# def groceryOneScreen_onMousePress(app, mouseX, mouseY):
+def distance(x0, y0, x1, y1):
+    return ((x1 - x0)**2 + (y1 - y0)**2)**0.5
+
+def groceryOneScreen_onMousePress(app, mouseX, mouseY):
+    cx = 850
+    cy = 50
+    r = 25
+    # test for intersection
+    if distance(cx, cy, mouseX, mouseY) <= r:
+        # yes, it is inside the circle!
+        # so increase the counter
+        record():
+
+def record():
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 44100
+    CHUNK = 1024
+    RECORD_SECONDS = 5
+    WAVE_OUTPUT_FILENAME = "speech.wav"
+    
+    # Initialize PyAudio
+    audio = pyaudio.PyAudio()
+    
+    # Open recording stream
+    stream = audio.open(format=FORMAT,
+                        channels=CHANNELS,
+                        rate=RATE,
+                        input=True,
+                        frames_per_buffer=CHUNK)
+    
+    print("Recording...")
+    
+    frames = []
+
+    # Record audio in chunks
+    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+        data = stream.read(CHUNK)
+        frames.append(data)
+    
+    print("Finished recording.")
+    
+    # Stop and close the stream
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
+
+    # Save the recorded audio to a file
+    with wave.open(WAVE_OUTPUT_FILENAME, 'wb') as wf:
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(audio.get_sample_size(FORMAT))
+        wf.setframerate(RATE)
+        wf.writeframes(b''.join(frames))
+    
+    print("Audio saved to", WAVE_OUTPUT_FILENAME)
+    translate()
+
+def translate():
+    if app.language == 'chinese':
+        return chineseText()
+
+def chineseText():
+    # Initialize the recognizer
+    recognizer = sr.Recognizer()
+    
+    # Specify the path to the WAV file containing Chinese speech
+    wav_file_path = "speech.wav"
+
+    # Load the audio file
+    with sr.AudioFile(wav_file_path) as source:
+        # Adjust for ambient noise if necessary
+        recognizer.adjust_for_ambient_noise(source)
+        # Record the audio from the WAV file
+        audio = recognizer.record(source)
+
+    try:
+        print("Recognizing...")
+        # Use Google's speech recognition with Chinese language parameter
+        text = recognizer.recognize_google(audio, language='zh-CN')  # 'zh-CN' for Simplified Chinese
+        print(text)
+    except sr.UnknownValueError:
+        print("Sorry, I couldn't understand what was said in the audio.")
+    except sr.RequestError as e:
+        print("Sorry, I couldn't request results from the speech recognition service; {0}".format(e))
 
 ####################################################
 # groceryTwoScreen
