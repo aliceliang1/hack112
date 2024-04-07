@@ -147,6 +147,12 @@ def groceryHomeScreen_redrawAll(app):
     drawLabel('Checkout', app.width/2, 100*2 + 40, size=24)
     drawLabel('Order To-Go', app.width/2, 100*3+40, size=24)
     drawLabel('Small Talk', app.width/2, 100*4+40, size=24)
+    drawButton(app)
+
+def drawButton(app):
+    drawCircle(850, 50, 20, fill = 'red')
+    drawCircle(850, 50, 25, fill = None, border = 'red')
+    drawLabel('REC', 850, 50, fill = 'white')
 
     # drawRect(app.width/2 - 70, app.height/2 )
 
