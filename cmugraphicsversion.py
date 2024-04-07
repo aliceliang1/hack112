@@ -12,13 +12,13 @@ def onAppStart(app):
     app.themes = ["Grocery]
     app.themeIndex= 0
     app.currTheme = "Grocery"
+    setActiveScreen('helpScreen')
     newGame(app)
 
 def newGame(app):
     app.livesCount = 2
     app.winGame = False
     app.loseGame = False
-    pass
     
 ####################################################
 # Code used by multiple screens
@@ -28,7 +28,7 @@ def onKeyPressHelper(app, key):
     # Since every screen does the same thing on key presses, we can
     # write the main logic here and just have them call this helper fn
     # You should add/edit some code here...
-    if   key == 'd': setActiveScreen('setDimsScreen')
+    if   key == 'd': setActiveScreen('setWelcomeScreen')
     elif key == 't': setActiveScreen('setThemeScreen')
     elif key == '?': setActiveScreen('helpScreen')
     elif key == 'p': setActiveScreen('playScreen')
