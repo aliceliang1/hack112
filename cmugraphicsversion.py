@@ -28,8 +28,8 @@ def onKeyPressHelper(app, key):
     # Since every screen does the same thing on key presses, we can
     # write the main logic here and just have them call this helper fn
     # You should add/edit some code here...
-    if   key == 'm': setActiveScreen('setMapScreen')
-    elif key == 'g': setActiveScreen('setGroceryHomeScreen')
+    if key == 'm': setActiveScreen('mapScreen')
+    elif key == 'g': setActiveScreen('groceryHomeScreen')
     elif key == '?': setActiveScreen('helpScreen')
 
 def drawScreenTitle(app, screenTitle):
@@ -44,47 +44,45 @@ def helpScreen_redrawAll(app):
     drawRect(0, 0, app.width, app.height, fill='honeydew')
     drawScreenTitle(app, 'Help Screen')
 
+def helpScreen_onKeyPress(app, key):
+    onKeyPressHelper(app, key)
+
 ####################################################
 # setMapScreen
 ####################################################
 
-def setMapScreen_onScreenActivate(app):
-#     # insert a picture
-    print('''
+# def setMapScreen_onScreenActivate(app):
+# #     # insert a picture
+#     print('''
 
-********************************************
-You just activated the setDims Screen!
-You can put code here (in setDimsScreen_onScreenActivate)
-to do something each time the user activates this screen.
-********************************************
-''')
+# ********************************************
+# You just activated the setDims Screen!
+# You can put code here (in setDimsScreen_onScreenActivate)
+# to do something each time the user activates this screen.
+# ********************************************
+# ''')
 
-def setMapScreen_redrawAll(app):
-    # instructions
-    drawScreenTitle(app, 'Set Maps Screen')
-    pass
+# def mapScreen_redrawAll(app):
+#     # instructions
+#     pass
 
 def mapScreen_redrawAll(app):
+    drawScreenTitle(app, 'Maps Screen')
     drawRect(0, 0, 200, 200, fill='blue')
 
+def mapScreen_onKeyPress(app, key):
+    onKeyPressHelper(app, key)
 
 ####################################################
 # setGroceryHomeScreen
 ####################################################
 
-def setGroceryHomeScreen_redrawAll(app):
-    drawScreenTitle(app, 'Set Grocery Screen')
+def groceryHomeScreen_redrawAll(app):
+    drawScreenTitle(app, 'Grocery Screen')
     
 
-def setGroceryHomeScreen_onKeyPress(app, key):
-    pass
-
-####################################################
-# playScreen
-####################################################
-
-def playScreen_redrawAll(app):
-    drawScreenTitle(app, 'Set Play Screen')
+def groceryHomeScreen_onKeyPress(app, key):
+    onKeyPressHelper(app, key)
 
 
 ####################################################
