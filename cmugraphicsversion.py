@@ -21,11 +21,19 @@ def onAppStart(app):
     # photos
     app.scottyUrl = "https://www.cmu.edu/dining/news/2023/scottys-market-rendering_900x600-min.jpg"
     app.cashierUrl = "https://i.pinimg.com/736x/63/fe/45/63fe45b8bd25e633c93b40c765dcae26.jpg"
+    app.tepperHomeURL = "https://pythagurus.in/wp-content/uploads/2023/05/carnegie-mellon-cmu-tepper-mba.jpg"
+    app.tepper1URL = "https://www.cmu.edu/tepper/the-intelligent-future/tepper-quad/assets/images/quad-tour-9-900x600-min.jpg"
+    app.tepper2URL = "https://www.cmu.edu/piper/news/archives/2019/may/images/laura-kelly-900x600-min.jpg"
+    app.grocery2URL = "https://img.freepik.com/premium-vector/fast-food-cashier-keep-using-medical-mask-while-working-fast-food-cashier_209620-246.jpg"
+    app.grocery3URL = 'https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA5L3Jhd3BpeGVsX29mZmljZV8yMl9taW5pbWFsX2ZsYXRfdmVjdG9yX2Flc3RoZXRpY19pbGx1c3RyYXRpb25fb18yNzYzNGRjOS0xYmJkLTRjNmQtODE5Yy03NzMxMzdhMzZkYTMucG5n.png'
     app.language = 'chinese'
+    app.compText = '我要用卡掏'
+    app.recording = False
     # help screen
     app.play = False
     # app.url = 'https://drive.google.com/file/d/1PTMYdlDgp2zHuR9niUs-DdMMH4sp5onp/view?usp=sharing'
-    app.url = "https://files.oaiusercontent.com/file-LTdIVW5JJgHdeNxPDMGaSx8V?se=2024-04-07T06%3A25%3A39Z&sp=r&sv=2021-08-06&sr=b&rscc=max-age%3D31536000%2C%20immutable&rscd=attachment%3B%20filename%3Dc62f5cf8-0763-49a6-a229-98493239a332.webp&sig=vu%2BkfBUP2TEIVQdkMqhB19WJq0HuuoTCMjbIqjgp7E4%3D"
+    app.url = "https://cdn.dribbble.com/users/1004013/screenshots/11712934/media/93144a4dfa030ec4b7f670b21ed9ec4a.jpg?resize=400x0"
+    app.url1 = "https://www.whalesharkstudio.com/wp-content/uploads/2016/10/lingo.jpg"
     newGame(app)
 
 def newGame(app):
@@ -85,26 +93,28 @@ def record(app):
         wf.writeframes(b''.join(frames))
     
     print("Audio saved to", WAVE_OUTPUT_FILENAME)
+    print(app.language)
     return translate(app)
 
 def translate(app):
+    # return chineseText()
     if app.language == 'chinese':
         return chineseText()
-    elif app.language == 'arabic':
-        return arabicText()
+    elif app.language == 'german':
+        return germanText()
 
-def arabicText():
+def germanText():
     recognizer = sr.Recognizer()
 
     wav_file_path = "speech.wav"
 
-    with sr.AudioFile(wav_file_path)
+    with sr.AudioFile(wav_file_path) as source:
         recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.record(source)
     
     try:
         print("Recognizing...")
-        text = recognizer.recognize_google(audio, language="AR")
+        text = recognizer.recognize_google(audio, language="de")
         return text
     except sr.UnknownValueError:
         return "Sorry, I couldn't understand what was said in the audio."
@@ -135,6 +145,16 @@ def chineseText():
     except sr.RequestError as e:
         return "Sorry, I couldn't request results from the speech recognition service; {0}".format(e)
 
+def findHowAccurateRecording(recText, compText):
+    accurateWordCount = 0
+    accuracy = None
+    print(recText)
+    for i in range(min(len(recText), len(compText))):
+        if recText[i] == compText[i]:
+            accurateWordCount += 1
+    accuracy = accurateWordCount/len(compText)
+    return accuracy >= .4
+
     
 ####################################################
 # Code used by multiple screens
@@ -142,12 +162,22 @@ def chineseText():
 
 def onKeyPressHelper(app, key):
     if key == 'm': setActiveScreen('mapScreen')
-    elif key == 'g': setActiveScreen('groceryHomeScreen')
+    elif key == 'g':
+        setActiveScreen('groceryHomeScreen')
+        app.language = 'chinese'
+    elif key == 't': 
+        setActiveScreen('tepperHomeScreen')
+        app.language = "german"
     elif key == '?': setActiveScreen('helpScreen')
 
 def drawScreenTitle(app, screenTitle):
     # drawLabel('BreakLingo', app.width/2, 20, size=20, bold=True)
     drawLabel(screenTitle, app.width/2, 50, size=16, bold=True)
+
+def drawButton(app):
+    drawCircle(850, 50, 20, fill='red')
+    drawCircle(850, 50, 25, fill=None, border='red')
+    drawLabel('REC', 850, 50, fill='white')
 
 ####################################################
 # helpScreen
@@ -162,7 +192,8 @@ def helpScreen_onKeyPress(app, key):
  
 def helpScreen_redrawAll(app):
     drawScreenTitle(app, 'Help Screen')
-    #drawImage(app.url, -75, -265)
+    drawImage(app.url1, 230, 40)
+    drawImage(app.url, 65, 150)
     color = 'lightCyan' if app.play else 'paleTurquoise'
     drawRect(app.width/2 - 125, 525, 250, 50, fill = color, 
         border = 'midnightBlue', borderWidth = 8)
@@ -236,7 +267,7 @@ def mapScreen_onMouseMove(app, mouseX, mouseY):
  
 def mapScreen_onMousePress(app, mouseX, mouseY):
     if app.tepper == True:
-        pass
+        setActiveScreen('tepperHomeScreen')
     elif app.scotty == True:
         setActiveScreen('groceryHomeScreen')
     elif app.cuc == True:
@@ -307,18 +338,18 @@ def groceryOneScreen_redrawAll(app):
     drawLabel('nǐ xiǎng zěn yàng tāo qián?', 175, 200, fill='black')
     # initialMessage(app)
     drawButton(app)
-    if app.recordButton == True:
-        drawLabel("Recording...", 850, 100, size = 16)
-        drawLabel(f"I'm going to pay with card.", app.width/2, app.height/2+100, fill='black', size = 30)
+    if app.recording == True:
+        # drawLabel("Recording...", 850, 100, size = 16)
+        drawLabel(f"I'm going to pay with card.", app.width/2, app.height/2+180, fill='black', size = 30)
     if app.correctPhraseSaid:
-        drawLabel('CORRECT PHRASE', app.width/2, app.height/2, fill='green')
+        drawLabel('CORRECT PHRASE', app.width/2, app.height/2 + 220, fill='green', size = 24)
     elif app.correctPhraseSaid == False and app.recordButton == True:
-        drawLabel('WRONG PHRASE', app.width/2, app.height/2, fill='green')
+        drawLabel('WRONG PHRASE', app.width/2, app.height/2 + 220, fill='red', size = 24)
 
-def drawButton(app):
-    drawCircle(850, 50, 20, fill='red')
-    drawCircle(850, 50, 25, fill=None, border='red')
-    drawLabel('REC', 850, 50, fill='white')
+# def drawButton(app):
+#     drawCircle(850, 50, 20, fill='red')
+#     drawCircle(850, 50, 25, fill=None, border='red')
+#     drawLabel('REC', 850, 50, fill='white')
 
 def groceryOneScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
@@ -333,19 +364,20 @@ def groceryOneScreen_onMousePress(app, mouseX, mouseY):
     # test for intersection
     if distance(cx, cy, mouseX, mouseY) <= r:
         # yes, it is inside the circle!
-        # so increase the counter
+        app.recording = True
         app.recordedText = record(app)
         print(app.recordedText)
         app.recordButton = True
         app.compText = '我要用卡掏' #CHANGE THIS
         app.correctPhraseSaid = findHowAccurateRecording(app.recordedText, app.compText)
+        # textToSpeech('The right answer was')
 
 # def initialMessage(app):
 #     text = '你想怎样掏钱'
-#     textToSpeech(app, text)
+#     textToSpeech(text)
 
-# def textToSpeech(app, text):
-#     tts = gTTS(text=text, lang='zh-cn') # create instance of gTTS class
+# def textToSpeech(command):
+#     tts = gTTS(text=command, lang='en') # create instance of gTTS class
 #     tts.save("output.mp3") # save audio file
 #     os.system("start output.mp3") # play audio file
 
@@ -392,11 +424,13 @@ def record(app):
         wf.writeframes(b''.join(frames))
     
     print("Audio saved to", WAVE_OUTPUT_FILENAME)
+    print(app.language)
     return translate(app)
 
 def translate(app):
-    if app.language == 'chinese':
-        return chineseText()
+    # if app.language == 'chinese':
+        # print('chinese is it chinese')
+    return chineseText()
 
 def chineseText():
     # Initialize the recognizer
@@ -422,15 +456,15 @@ def chineseText():
     except sr.RequestError as e:
         return "Sorry, I couldn't request results from the speech recognition service; {0}".format(e)
 
-def findHowAccurateRecording(recText, compText):
-    accurateWordCount = 0
-    accuracy = None
-    print(recText)
-    for i in range(min(len(recText), len(compText))):
-        if recText[i] == compText[i]:
-            accurateWordCount += 1
-    accuracy = accurateWordCount/len(compText)
-    return accuracy > .4
+# def findHowAccurateRecording(recText, compText):
+#     accurateWordCount = 0
+#     accuracy = None
+#     print(recText)
+#     for i in range(min(len(recText), len(compText))):
+#         if recText[i] == compText[i]:
+#             accurateWordCount += 1
+#     accuracy = accurateWordCount/len(compText)
+#     return accuracy > .4
 
 ####################################################
 # groceryTwoScreen
@@ -438,20 +472,24 @@ def findHowAccurateRecording(recText, compText):
 
 def groceryTwoScreen_onAppStart(app):
     app.compG2Text = '我能来一个汉堡吗?'
+
 def groceryTwoScreen_redrawAll(app):
     drawLabel('Order To-Go', app.width/2, app.height/2)
+    drawImage(app.grocery2URL, 125, 15)
     drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
     drawRect(75, 150, 200, 100, fill='orangeRed')
     drawLabel('nǐ hǎo, nǐ jīn tiān xiǎng chī shén me?', 175, 200, fill='black')
     # initialMessage(app)
     drawButton(app)
     if app.recordButton == True:
-        drawLabel("Recording...", 850, 100, size = 16)
-        drawLabel(f'Can I have a burger with lettuce and cheese but not tomatoes?', app.width/2, app.height/2, fill='black', size = 30)
+        # drawLabel("Recording...", 850, 100, size = 16)
+        drawLabel(f'Can I have a burger with lettuce and cheese but not tomatoes?', app.width/2, app.height/2 + 180, fill='black', size = 15)
     if app.correctPhraseSaid:
-        drawLabel('CORRECT PHRASE', app.width/2, app.height/2, fill='green')
+        drawLabel('CORRECT PHRASE', app.width/2, app.height/2 + 220, fill='green', size = 20)
     elif app.correctPhraseSaid == False and app.recordButton == True:
-        drawLabel('WRONG PHRASE', app.width/2, app.height/2, fill='green')
+        drawLabel('WRONG PHRASE', app.width/2, app.height/2 + 220, fill='red', size = 20)
+        text = "What the fuck?"
+        # textToSpeech(text)
 
 def groceryTwoScreen_onMousePress(app, mouseX, mouseY):
     cx = 850
@@ -461,10 +499,12 @@ def groceryTwoScreen_onMousePress(app, mouseX, mouseY):
     if distance(cx, cy, mouseX, mouseY) <= r:
         # yes, it is inside the circle!
         # so increase the counter
+        app.language = 'chinese'
         app.recordedG2Text = record(app)
         print(app.recordedG2Text)
         app.recordButton = True
         app.correctPhraseSaid = findHowAccurateRecording(app.recordedG2Text, app.compG2Text)
+
 
 def groceryTwoScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
@@ -474,23 +514,25 @@ def groceryTwoScreen_onKeyPress(app, key):
 ####################################################
 
 def groceryThreeScreen_onAppStart(app):
-    app.compG2Text = '我能来一个汉堡吗?'
+    app.compG3Text = '我还行。你今天怎么样？'
 
 def groceryThreeScreen_redrawAll(app):
     drawLabel('Small Talk', app.width/2, app.height/2)
     drawLabel('Order To-Go', app.width/2, app.height/2)
+    drawImage(app.grocery3URL, 50, 0)
     drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
-    drawRect(75, 150, 200, 100, fill='orangeRed')
-    drawLabel('nǐ hǎo, nǐ jīn tiān xiǎng chī shén me?', 175, 200, fill='black')
+    drawRect(75, 250, 200, 100, fill='orangeRed')
+    drawLabel('fix this?', 175, 300, fill='black')
+    drawLabel('', 175, 200, fill='black')
     # initialMessage(app)
     drawButton(app)
     if app.recordButton == True:
-        drawLabel("Recording...", 850, 100, size = 16)
-        drawLabel(f'Can I have a burger with lettuce and cheese but not tomatoes?', app.width/2, app.height/2, fill='black', size = 30)
+        # drawLabel("Recording...", 850, 100, size = 16)
+        drawLabel(f'How are you doing today?', app.width/2, app.height/2 + 180, fill='black', size = 20)
     if app.correctPhraseSaid:
-        drawLabel('CORRECT PHRASE', app.width/2, app.height/2, fill='green')
+        drawLabel('CORRECT PHRASE', app.width/2, app.height/2 + 220, fill='green')
     elif app.correctPhraseSaid == False and app.recordButton == True:
-        drawLabel('WRONG PHRASE', app.width/2, app.height/2, fill='green')
+        drawLabel('WRONG PHRASE', app.width/2, app.height/2 + 220, fill='red')
 
 def groceryThreeScreen_onMousePress(app, mouseX, mouseY):
     cx = 850
@@ -500,12 +542,202 @@ def groceryThreeScreen_onMousePress(app, mouseX, mouseY):
     if distance(cx, cy, mouseX, mouseY) <= r:
         # yes, it is inside the circle!
         # so increase the counter
-        app.recordedG2Text = record(app)
-        print(app.recordedG2Text)
+        app.recordedG3Text = record(app)
+        print(app.recordedG3Text)
         app.recordButton = True
-        app.correctPhraseSaid = findHowAccurateRecording(app.recordedG2Text, app.compG2Text)
+        app.correctPhraseSaid = findHowAccurateRecording(app.recordedG3Text, app.compG3Text)
 
 def groceryThreeScreen_onKeyPress(app, key):
+    onKeyPressHelper(app, key)
+
+####################################################
+# tepperHomeScreen
+####################################################
+def tepperHomeScreen_redrawAll(app):
+    drawScreenTitle(app, 'Tepper Screen')
+    drawImage(app.tepperHomeURL, 0, 0)
+    # drawRect(app.width/2 - 70, app.height/2 - 10, 140, 50, fill='white')
+    drawLabel('Tepper Deutschland', app.width/2, 70, size=50, fill='white', bold = True)
+    for i in range(3):
+        drawRect(app.width/2 - 100, 100*(i+2), 200, 80, fill='white', border='black')
+    drawLabel('Bathroom Location', app.width/2, 100*2 + 40, size=21)
+    drawLabel('Professor', app.width/2, 100*3+40, size=24)
+    drawLabel('Student Question', app.width/2, 100*4 + 40, size = 21)
+
+    # drawRect(app.width/2 - 70, app.height/2 )
+
+def tepperHomeScreen_onMousePress(app, mouseX, mouseY):
+    if (app.width/2-100 <= mouseX <= ((app.width/2)-100) + 200 and
+        (100*2) <= mouseY <= (100*2)+80):
+        app.groceryHomeOneSelected = True
+        setActiveScreen('tepperOneScreen')
+    elif (app.groceryHomeOneSelected == True and app.width/2-100 <= mouseX <= ((app.width/2)-100) + 200 and
+        (100*3) <= mouseY <= (100*3)+80):
+        app.groceryHomeTwoSelected = True
+        setActiveScreen('tepperTwoScreen')
+
+def tepperHomeScreen_onKeyPress(app, key):
+    onKeyPressHelper(app, key)
+
+
+####################################################
+# tepperOneScreen
+####################################################
+def tepperOneScreen_onAppStart(app):
+    app.compT1Text = 'Das Badezimmer befindet sich auf der linken Seite'
+def tepperOneScreen_redrawAll(app):
+    drawImage(app.tepper1URL, 0, 0)
+    drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
+    drawRect(75, 150, 200, 100, fill='orangeRed')
+    drawLabel("Können Sie mir sagen,", 175, 190, fill='black')
+    drawLabel("wo das Badezimmer ist?", 175, 220, fill='black')
+    # initialMessage(app)
+    drawButton(app)
+    if app.recordButton == True:
+        # drawLabel("Recording...", 850, 100, size = 16)
+        drawLabel(f'The bathroom is to the left', app.width/2, app.height/2 + 180, fill='black', size = 30)
+    if app.correctPhraseSaid:
+        drawLabel('CORRECT PHRASE', app.width/2, app.height/2 + 220, fill='green', size = 20)
+    elif app.correctPhraseSaid == False and app.recordButton == True:
+        drawLabel('WRONG PHRASE', app.width/2, app.height/2 + 220, fill='red', size = 20)
+
+def tepperOneScreen_onMousePress(app, mouseX, mouseY):
+    cx = 850
+    cy = 50
+    r = 25
+    # test for intersection
+    if distance(cx, cy, mouseX, mouseY) <= r:
+        # app.language = 'german'
+        # yes, it is inside the circle!
+        # so increase the counter
+        app.recordedT1Text = record(app)
+        print(app.recordedT1Text)
+        app.recordButton = True
+        app.correctPhraseSaid = findHowAccurateRecording(app.recordedT1Text, app.compT1Text)
+    
+def record(app):
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 44100
+    CHUNK = 1024
+    RECORD_SECONDS = 10
+    WAVE_OUTPUT_FILENAME = "speech.wav"
+    
+    # Initialize PyAudio
+    audio = pyaudio.PyAudio()
+    
+    # Open recording stream
+    stream = audio.open(format=FORMAT,
+                        channels=CHANNELS,
+                        rate=RATE,
+                        input=True,
+                        frames_per_buffer=CHUNK)
+    
+    # drawLabel("Recording...", 850, 60, size = 20)
+    
+    frames = []
+
+    # Record audio in chunks
+    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+        data = stream.read(CHUNK)
+        frames.append(data)
+    
+    print("Finished recording.")
+    
+    # Stop and close the stream
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
+
+    # Save the recorded audio to a file
+    with wave.open(WAVE_OUTPUT_FILENAME, 'wb') as wf:
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(audio.get_sample_size(FORMAT))
+        wf.setframerate(RATE)
+        wf.writeframes(b''.join(frames))
+    
+    print("Audio saved to", WAVE_OUTPUT_FILENAME)
+    return translate(app)
+
+def translate(app):
+    print(app.language)
+    return chineseText()
+    # if app.language == 'german':
+    #     return germanText()
+
+# def germanText():
+#     # Initialize the recognizer
+#     recognizer = sr.Recognizer()
+    
+#     # Specify the path to the WAV file containing Chinese speech
+#     wav_file_path = "speech.wav"
+
+#     # Load the audio file
+#     with sr.AudioFile(wav_file_path) as source:
+#         # Adjust for ambient noise if necessary
+#         recognizer.adjust_for_ambient_noise(source)
+#         # Record the audio from the WAV file
+#         audio = recognizer.record(source)
+
+#     try:
+#         print("Recognizing...")
+#         # Use Google's speech recognition with Chinese language parameter
+#         text = recognizer.recognize_google(audio, language='de')  # 'zh-CN' for Simplified Chinese
+#         return text
+#     except sr.UnknownValueError:
+#         return "Sorry, I couldn't understand what was said in the audio."
+#     except sr.RequestError as e:
+#         return "Sorry, I couldn't request results from the speech recognition service; {0}".format(e)
+
+# def findHowAccurateRecording(recText, compText):
+#     accurateWordCount = 0
+#     accuracy = None
+#     print(recText)
+#     for line1 in recText.split(' '):
+#         for line2 in compText.split(' '):
+#             if line1 == line2:
+#                 accurateWordCount += 1
+#     accuracy = accurateWordCount/len(compText)
+#     return accuracy > .4
+
+def tepperOneScreen_onKeyPress(app, key):
+    onKeyPressHelper(app, key)
+
+####################################################
+# tepperTwo
+####################################################
+def tepperTwoScreen_onAppStart(app):
+    app.compT2Text = 'Ich bin hier und besuche die Schule'
+def tepperTwoScreen_redrawAll(app):
+    drawImage(app.tepper2URL, 0, 0)
+    drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
+    drawRect(75, 250, 200, 100, fill='orangeRed')
+    drawLabel("Warum bist du heute hier?", 175, 300, fill='black')
+    # initialMessage(app)
+    drawButton(app)
+    if app.recordButton == True:
+        # drawLabel("Recording...", 850, 100, size = 16)
+        drawLabel(f'I am here visiting the school.', app.width/2, app.height/2 + 180, fill='black', size = 30)
+    if app.correctPhraseSaid:
+        drawLabel('CORRECT PHRASE', app.width/2, app.height/2 + 220, fill='green', size = 20)
+    elif app.correctPhraseSaid == False and app.recordButton == True:
+        drawLabel('WRONG PHRASE', app.width/2, app.height/2 + 220, fill='red', size = 20)
+
+def tepperTwoScreen_onMousePress(app, mouseX, mouseY):
+    cx = 850
+    cy = 50
+    r = 25
+    # test for intersection
+    if distance(cx, cy, mouseX, mouseY) <= r:
+        # app.language = 'german'
+        # yes, it is inside the circle!
+        # so increase the counter
+        app.recordedT2Text = record(app)
+        print(app.recordedT2Text)
+        app.recordButton = True
+        app.correctPhraseSaid = findHowAccurateRecording(app.recordedT2Text, app.compT2Text)
+
+def tepperTwoScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
 
 ####################################################
