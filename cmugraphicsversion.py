@@ -6,10 +6,18 @@ import random
 ####################################################
 
 def onAppStart(app):
+    app.width = 1600
+    app.height = 600
+    app.stepsPerSecond = 10
+    app.themes = ["Grocery]
+    app.themeIndex= 0
+    app.currTheme = "Grocery"
     newGame(app)
-    pass
 
 def newGame(app):
+    app.livesCount = 2
+    app.winGame = False
+    app.loseGame = False
     pass
     
 ####################################################
