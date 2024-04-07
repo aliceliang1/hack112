@@ -33,7 +33,7 @@ def onKeyPressHelper(app, key):
     elif key == '?': setActiveScreen('helpScreen')
 
 def drawScreenTitle(app, screenTitle):
-    drawLabel('SuperSet!', app.width/2, 20, size=20, bold=True)
+    # drawLabel('BreakLingo', app.width/2, 20, size=20, bold=True)
     drawLabel(screenTitle, app.width/2, 50, size=16, bold=True)
 
 ####################################################
@@ -42,14 +42,14 @@ def drawScreenTitle(app, screenTitle):
 
 def helpScreen_redrawAll(app):
     drawRect(0, 0, app.width, app.height, fill='honeydew')
-    # drawScreenTitle(app, 'Help Screen')
+    drawScreenTitle(app, 'Help Screen')
 
 ####################################################
-# setDimsScreen
+# setMapsScreen
 ####################################################
 
-def setDimsScreen_onScreenActivate(app):
-    app.currDims = copy.copy(app.dims)
+def setMapScreen_onScreenActivate(app):
+#     # insert a picture
     print('''
 
 ********************************************
@@ -59,9 +59,10 @@ to do something each time the user activates this screen.
 ********************************************
 ''')
 
-def setDimsScreen_redrawAll(app):
+def setMapScreen_redrawAll(app):
+    # instructions
     pass
-    # drawScreenTitle(app, 'Set Dimensions Screen')
+    drawScreenTitle(app, 'Set Maps Screen')
 
 
 ####################################################
