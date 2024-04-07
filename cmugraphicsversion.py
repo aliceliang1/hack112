@@ -76,7 +76,7 @@ def groceryHomeScreen_redrawAll(app):
 
     # drawRect(app.width/2 - 70, app.height/2 )
 
-def onMousePress(app, mouseX, mouseY):
+def groceryHomeScreen_onMousePress(app, mouseX, mouseY):
     if (app.width/2-100 <= mouseX <= ((app.width/2)-100) + 200 and
         (100*2) <= mouseY <= (100*2)+80):
         app.groceryHomeOneSelected = True
@@ -101,6 +101,7 @@ def groceryHomeScreen_onKeyPress(app, key):
 def groceryOneScreen_redrawAll(app):
     drawLabel('Cashier', app.width/2, app.height/2)
 
+# def groceryOneScreen_onMousePress(app, mouseX, mouseY):
 
 
 ####################################################
