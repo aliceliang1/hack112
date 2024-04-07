@@ -6,10 +6,10 @@ import random
 ####################################################
 
 def onAppStart(app):
-    app.width = 1600
+    app.width = 1000
     app.height = 600
     app.stepsPerSecond = 10
-    app.themes = ["Grocery]
+    app.themes = ["Grocery"]
     app.themeIndex= 0
     app.currTheme = "Grocery"
     setActiveScreen('helpScreen')
