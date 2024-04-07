@@ -15,7 +15,7 @@ def onAppStart(app):
     app.currTheme = "Grocery"
     # photos
     app.scottyUrl = "https://www.cmu.edu/dining/news/2023/scottys-market-rendering_900x600-min.jpg"
-    app.cashierUrl = "https://files.oaiusercontent.com/file-DZsSTpx4c7ABOdXIthZQ4m9M?se=2024-04-07T05%3A15%3A22Z&sp=r&sv=2021-08-06&sr=b&rscc=max-age%3D31536000%2C%20immutable&rscd=attachment%3B%20filename%3D68a7ddd3-0956-43f7-bbdb-5c38b0635b4d.webp&sig=iF4je0T4Z57i%2B4%2BI2K%2BFM0JBXImlzwuy94yqNOWoZWk%3D"
+    app.cashierUrl = "https://drive.google.com/file/d/1uV2YXyxZsrHtdrOJrNggy-GNp1yDlHYC/view?usp=sharing"
     newGame(app)
 
 def newGame(app):
@@ -174,7 +174,7 @@ def groceryHomeScreen_onKeyPress(app, key):
 
 def groceryOneScreen_redrawAll(app):
     drawLabel('Cashier', app.width/2, app.height/2)
-    drawImage(app.cashierUrl, -100, -100)
+    drawImage(app.cashierUrl, 0, 0)
 
 def groceryOneScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
