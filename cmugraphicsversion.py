@@ -220,7 +220,7 @@ def record():
                         input=True,
                         frames_per_buffer=CHUNK)
     
-    print("Recording...")
+    drawLabel("Recording...", 850, 60, size = 20)
     
     frames = []
 
