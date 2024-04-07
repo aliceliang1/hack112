@@ -20,6 +20,10 @@ def onAppStart(app):
     app.scottyUrl = "https://www.cmu.edu/dining/news/2023/scottys-market-rendering_900x600-min.jpg"
     app.cashierUrl = "https://i.pinimg.com/736x/63/fe/45/63fe45b8bd25e633c93b40c765dcae26.jpg"
     app.language = 'chinese'
+    # help screen
+    app.play = False
+    # app.url = 'https://drive.google.com/file/d/1PTMYdlDgp2zHuR9niUs-DdMMH4sp5onp/view?usp=sharing'
+    app.url = "https://files.oaiusercontent.com/file-LTdIVW5JJgHdeNxPDMGaSx8V?se=2024-04-07T06%3A25%3A39Z&sp=r&sv=2021-08-06&sr=b&rscc=max-age%3D31536000%2C%20immutable&rscd=attachment%3B%20filename%3Dc62f5cf8-0763-49a6-a229-98493239a332.webp&sig=vu%2BkfBUP2TEIVQdkMqhB19WJq0HuuoTCMjbIqjgp7E4%3D"
     newGame(app)
 
 def newGame(app):
@@ -53,12 +57,33 @@ def drawScreenTitle(app, screenTitle):
 # helpScreen
 ####################################################
 
-def helpScreen_redrawAll(app):
-    drawRect(0, 0, app.width, app.height, fill='honeydew')
-    drawScreenTitle(app, 'Help Screen')
+# def helpScreen_redrawAll(app):
+#     drawRect(0, 0, app.width, app.height, fill='honeydew')
+#     drawScreenTitle(app, 'Help Screen')
 
 def helpScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
+ 
+def helpScreen_redrawAll(app):
+    drawScreenTitle(app, 'Help Screen')
+    drawImage(app.url, -75, -265)
+    color = 'lightCyan' if app.play else 'paleTurquoise'
+    drawRect(app.width/2 - 125, 525, 250, 50, fill = color, 
+        border = 'midnightBlue', borderWidth = 8)
+    drawLabel("Press Play!", app.width/2, 550, size = 16, font = 'montserrat', bold = True)
+ 
+def helpScreen_onMouseMove(app, mouseX, mouseY):
+    isPlay(app, mouseX, mouseY)
+ 
+def helpScreen_onMousePress(app, mouseX, mouseY):
+    if app.play == True:
+        setActiveScreen('mapScreen')
+ 
+def isPlay(app, mouseX, mouseY):
+    if 325 <= mouseX <= 575 and 525 <= mouseY <= 575:
+        app.play = True
+    else:
+        app.play = False
 
 ####################################################
 # mapScreen
@@ -183,7 +208,7 @@ def groceryOneScreen_redrawAll(app):
     drawImage(app.cashierUrl, 100, -50)
     drawButton(app)
     if app.recordButton == True:
-        drawLabel("Recording...", 850, 60, size = 20)
+        drawLabel("Recording...", 850, 100, size = 16)
 
 def drawButton(app):
     drawCircle(850, 50, 20, fill='red')
@@ -204,15 +229,15 @@ def groceryOneScreen_onMousePress(app, mouseX, mouseY):
     if distance(cx, cy, mouseX, mouseY) <= r:
         # yes, it is inside the circle!
         # so increase the counter
-        record()
+        record(app)
         app.recordButton = True
 
-def record():
+def record(app):
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100
     CHUNK = 1024
-    RECORD_SECONDS = 5
+    RECORD_SECONDS = 10
     WAVE_OUTPUT_FILENAME = "speech.wav"
     
     # Initialize PyAudio
@@ -249,9 +274,9 @@ def record():
         wf.writeframes(b''.join(frames))
     
     print("Audio saved to", WAVE_OUTPUT_FILENAME)
-    translate()
+    translate(app)
 
-def translate():
+def translate(app):
     if app.language == 'chinese':
         return chineseText()
 
