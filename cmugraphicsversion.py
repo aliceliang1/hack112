@@ -100,26 +100,26 @@ def translate(app):
     # return chineseText()
     if app.language == 'chinese':
         return chineseText()
-    elif app.language == 'german':
-        return germanText()
+    # elif app.language == 'german':
+    #     return germanText()
 
-def germanText():
-    recognizer = sr.Recognizer()
+# def germanText():
+#     recognizer = sr.Recognizer()
 
-    wav_file_path = "speech.wav"
+#     wav_file_path = "speech.wav"
 
-    with sr.AudioFile(wav_file_path) as source:
-        recognizer.adjust_for_ambient_noise(source)
-        audio = recognizer.record(source)
+#     with sr.AudioFile(wav_file_path) as source:
+#         recognizer.adjust_for_ambient_noise(source)
+#         audio = recognizer.record(source)
     
-    try:
-        print("Recognizing...")
-        text = recognizer.recognize_google(audio, language="de")
-        return text
-    except sr.UnknownValueError:
-        return "Sorry, I couldn't understand what was said in the audio."
-    except sr.RequestError as e:
-        return "Sorry, I couldn't request results from the speech recognition service; {0}".format(e)
+#     try:
+#         print("Recognizing...")
+#         text = recognizer.recognize_google(audio, language="de")
+#         return text
+#     except sr.UnknownValueError:
+#         return "Sorry, I couldn't understand what was said in the audio."
+#     except sr.RequestError as e:
+#         return "Sorry, I couldn't request results from the speech recognition service; {0}".format(e)
 
 def chineseText():
     # Initialize the recognizer
@@ -299,7 +299,7 @@ def groceryHomeScreen_redrawAll(app):
     drawScreenTitle(app, 'Grocery Screen')
     drawImage(app.scottyUrl, 0, 0)
     # drawRect(app.width/2 - 70, app.height/2 - 10, 140, 50, fill='white')
-    drawLabel('Grocery Store', app.width/2, 70, size=50, fill='black')
+    drawLabel('Grocery Store', app.width/2, 120, size=50, fill='black')
     for i in range(3):
         drawRect(app.width/2 - 100, 100*(i+2), 200, 80, fill='white', border='black')
     drawLabel('Checkout', app.width/2, 100*2 + 40, size=24)
@@ -335,7 +335,10 @@ def groceryOneScreen_redrawAll(app):
     drawImage(app.cashierUrl, 100, -50)
     drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
     drawRect(75, 150, 200, 100, fill='orangeRed')
-    drawLabel('nǐ xiǎng zěn yàng tāo qián?', 175, 200, fill='black')
+    drawLabel('nǐ xiǎng zěn yàng tāo qián?', 175, 180, fill='black')
+    drawLabel('''Your response:''', 175, 210, fill = 'white')
+    drawLabel('''I'm going to pay with card.''', 175, 230, fill = 'white')
+
     # initialMessage(app)
     drawButton(app)
     if app.recording == True:
@@ -478,12 +481,14 @@ def groceryTwoScreen_redrawAll(app):
     drawImage(app.grocery2URL, 125, 15)
     drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
     drawRect(75, 150, 200, 100, fill='orangeRed')
-    drawLabel('nǐ hǎo, nǐ jīn tiān xiǎng chī shén me?', 175, 200, fill='black')
+    drawLabel('nǐ hǎo, nǐ jīn tiān xiǎng chī shén me?', 175, 180, fill='black')
+    drawLabel('''Your response:''', 175, 210, fill = 'white')
+    drawLabel('''Can I have a burger?''', 175, 230, fill = 'white')
     # initialMessage(app)
     drawButton(app)
     if app.recordButton == True:
         # drawLabel("Recording...", 850, 100, size = 16)
-        drawLabel(f'Can I have a burger with lettuce and cheese but not tomatoes?', app.width/2, app.height/2 + 180, fill='black', size = 15)
+        drawLabel(f'Can I have a burger?', app.width/2, app.height/2 + 180, fill='black', size = 15)
     if app.correctPhraseSaid:
         drawLabel('CORRECT PHRASE', app.width/2, app.height/2 + 220, fill='green', size = 20)
     elif app.correctPhraseSaid == False and app.recordButton == True:
@@ -522,8 +527,9 @@ def groceryThreeScreen_redrawAll(app):
     drawImage(app.grocery3URL, 50, 0)
     drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
     drawRect(75, 250, 200, 100, fill='orangeRed')
-    drawLabel('fix this?', 175, 300, fill='black')
-    drawLabel('', 175, 200, fill='black')
+    drawLabel('你今天怎么样？', 175, 280, fill='black')
+    drawLabel('''Your response:''', 175, 310, fill = 'white')
+    drawLabel('''I'm doing okay''', 175, 330, fill = 'white')
     # initialMessage(app)
     drawButton(app)
     if app.recordButton == True:
@@ -590,7 +596,9 @@ def tepperOneScreen_redrawAll(app):
     drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
     drawRect(75, 150, 200, 100, fill='orangeRed')
     drawLabel("Können Sie mir sagen,", 175, 190, fill='black')
-    drawLabel("wo das Badezimmer ist?", 175, 220, fill='black')
+    drawLabel("wo das Badezimmer ist?", 175, 200, fill='black')
+    drawLabel('''Your response: The ''', 175, 220, fill = 'white')
+    drawLabel('''bathroom is to the left''', 175, 230, fill = 'white')
     # initialMessage(app)
     drawButton(app)
     if app.recordButton == True:
@@ -712,7 +720,9 @@ def tepperTwoScreen_redrawAll(app):
     drawImage(app.tepper2URL, 0, 0)
     drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
     drawRect(75, 250, 200, 100, fill='orangeRed')
-    drawLabel("Warum bist du heute hier?", 175, 300, fill='black')
+    drawLabel("Warum bist du heute hier?", 175, 280, fill='black')
+    drawLabel('''Your response: I ''', 175, 310, fill = 'white')
+    drawLabel('''am here visiting the school''', 175, 320, fill = 'white')
     # initialMessage(app)
     drawButton(app)
     if app.recordButton == True:
