@@ -12,6 +12,8 @@ def onAppStart(app):
     app.themes = ["Grocery"]
     app.themeIndex= 0
     app.currTheme = "Grocery"
+    # photos
+    app.scottyUrl = "cmu://786056/30136545/Scotty's+Market.jpg"
     newGame(app)
 
 def newGame(app):
@@ -60,6 +62,8 @@ def mapScreen_onKeyPress(app, key):
 
 def groceryHomeScreen_redrawAll(app):
     drawScreenTitle(app, 'Grocery Screen')
+    drawImage(app.scottyUrl, 0, 0, 1000, 600)
+
     
 
 def groceryHomeScreen_onKeyPress(app, key):
