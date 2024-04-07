@@ -64,17 +64,36 @@ def groceryHomeScreen_redrawAll(app):
     drawScreenTitle(app, 'Grocery Screen')
     drawImage(app.scottyUrl, 0, 0)
     # drawRect(app.width/2 - 70, app.height/2 - 10, 140, 50, fill='white')
+    drawLabel('Grocery Store', app.width/2, 70, size=50, fill='black')
     for i in range(3):
         drawRect(app.width/2 - 100, 100*(i+2), 200, 80, fill='white', border='black')
     drawLabel('Checkout', app.width/2, 100*2 + 40, size=24)
     drawLabel('Order To-Go', app.width/2, 100*3+40, size=24)
     drawLabel('Small Talk', app.width/2, 100*4+40, size=24)
+
     # drawRect(app.width/2 - 70, app.height/2 )
-    
+
+def onMousePress(app, mouseX, mouseY):
+    if (app.width/2-100 <= mouseX <= ((app.width/2)-100) + 200 and
+        (100*2) <= mouseY <= (100*2)+80):
+        app.groceryHomeOneSelected = True
+        setActiveScreen('groceryOneScreen')
+    elif (app.groceryHomeOneSelected == True and app.width/2-100 <= mouseX <= ((app.width/2)-100) + 200 and
+        (100*3) <= mouseY <= (100*3)+80):
+        app.groceryHomeTwoSelected = True
+        setActiveScreen('groceryTwoScreen')
+    elif (app.groceryHomeOneSelected == True and app.groceryHomeTwoSelected == True and 
+          app.width/2-100 <= mouseX <= ((app.width/2)-100) + 200 and 
+          (100*4) <= mouseY <= (100*4)+80):
+        app.groceryHomeThreeSelected = True
+        setActiveScreen('groceryTwoScreen')
 
 def groceryHomeScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
 
+####################################################
+# groceryOneScreen
+####################################################
 
 ####################################################
 # main function
