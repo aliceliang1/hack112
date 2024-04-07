@@ -19,7 +19,6 @@ def onAppStart(app):
     # photos
     app.scottyUrl = "https://www.cmu.edu/dining/news/2023/scottys-market-rendering_900x600-min.jpg"
     app.cashierUrl = "https://drive.google.com/file/d/1uV2YXyxZsrHtdrOJrNggy-GNp1yDlHYC/view?usp=sharing"
-    app.language = 'chinese'
     newGame(app)
 
 def newGame(app):
@@ -179,12 +178,6 @@ def groceryHomeScreen_onKeyPress(app, key):
 def groceryOneScreen_redrawAll(app):
     drawLabel('Cashier', app.width/2, app.height/2)
     drawImage(app.cashierUrl, 0, 0)
-    drawButton(app)
-
-def drawButton(app):
-    drawCircle(850, 50, 20, fill = 'red')
-    drawCircle(850, 50, 25, fill = None, border = 'red')
-    drawLabel('REC', 850, 50, fill = 'white')
 
 def groceryOneScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
