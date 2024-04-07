@@ -299,7 +299,7 @@ def groceryHomeScreen_redrawAll(app):
     drawScreenTitle(app, 'Grocery Screen')
     drawImage(app.scottyUrl, 0, 0)
     # drawRect(app.width/2 - 70, app.height/2 - 10, 140, 50, fill='white')
-    drawLabel('Grocery Store', app.width/2, 70, size=50, fill='black')
+    drawLabel('Grocery Store', app.width/2, 120, size=50, fill='black', bold=True)
     for i in range(3):
         drawRect(app.width/2 - 100, 100*(i+2), 200, 80, fill='white', border='black')
     drawLabel('Checkout', app.width/2, 100*2 + 40, size=24)
@@ -335,7 +335,7 @@ def groceryOneScreen_redrawAll(app):
     drawImage(app.cashierUrl, 100, -50)
     drawRect(app.width/2-255, app.height/2+150, 510, 100, fill='white')
     drawRect(75, 150, 200, 100, fill='orangeRed')
-    drawLabel('nǐ xiǎng zěn yàng tāo qián?', 175, 200, fill='black')
+    drawLabel('nǐ xiǎng zěn yàng tāo qián?', 175, 200, fill='black', size = 14, bold=True)
     # initialMessage(app)
     drawButton(app)
     if app.recording == True:
