@@ -1,4 +1,3 @@
-
 from cmu_graphics import *
 import random
 import pyaudio
@@ -91,6 +90,26 @@ def record(app):
 def translate(app):
     if app.language == 'chinese':
         return chineseText()
+    elif app.language == 'arabic':
+        return arabicText()
+
+def arabicText():
+    recognizer = sr.Recognizer()
+
+    wav_file_path = "speech.wav"
+
+    with sr.AudioFile(wav_file_path)
+        recognizer.adjust_for_ambient_noise(source)
+        audio = recognizer.record(source)
+    
+    try:
+        print("Recognizing...")
+        text = recognizer.recognize_google(audio, language="AR")
+        return text
+    except sr.UnknownValueError:
+        return "Sorry, I couldn't understand what was said in the audio."
+    except sr.RequestError as e:
+        return "Sorry, I couldn't request results from the speech recognition service; {0}".format(e)
 
 def chineseText():
     # Initialize the recognizer
