@@ -18,7 +18,8 @@ def onAppStart(app):
     app.currTheme = "Grocery"
     # photos
     app.scottyUrl = "https://www.cmu.edu/dining/news/2023/scottys-market-rendering_900x600-min.jpg"
-    app.cashierUrl = "https://drive.google.com/file/d/1uV2YXyxZsrHtdrOJrNggy-GNp1yDlHYC/view?usp=sharing"
+    app.cashierUrl = "https://i.pinimg.com/736x/63/fe/45/63fe45b8bd25e633c93b40c765dcae26.jpg"
+    app.language = 'chinese'
     newGame(app)
 
 def newGame(app):
@@ -32,6 +33,8 @@ def newGame(app):
     app.tepper = False
     app.scotty = False
     app.cuc = False
+    # recording
+    app.recordButton = False
     
 ####################################################
 # Code used by multiple screens
@@ -177,8 +180,10 @@ def groceryHomeScreen_onKeyPress(app, key):
 
 def groceryOneScreen_redrawAll(app):
     drawLabel('Cashier', app.width/2, app.height/2)
-    drawImage(app.cashierUrl, -50, 100)
+    drawImage(app.cashierUrl, 100, -50)
     drawButton(app)
+    if app.recordButton == True:
+        drawLabel("Recording...", 850, 60, size = 20)
 
 def drawButton(app):
     drawCircle(850, 50, 20, fill='red')
@@ -199,7 +204,8 @@ def groceryOneScreen_onMousePress(app, mouseX, mouseY):
     if distance(cx, cy, mouseX, mouseY) <= r:
         # yes, it is inside the circle!
         # so increase the counter
-        record():
+        record()
+        app.recordButton = True
 
 def record():
     FORMAT = pyaudio.paInt16
@@ -219,7 +225,7 @@ def record():
                         input=True,
                         frames_per_buffer=CHUNK)
     
-    drawLabel("Recording...", 850, 60, size = 20)
+    # drawLabel("Recording...", 850, 60, size = 20)
     
     frames = []
 
