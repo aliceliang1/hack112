@@ -101,8 +101,30 @@ def groceryHomeScreen_onKeyPress(app, key):
 def groceryOneScreen_redrawAll(app):
     drawLabel('Cashier', app.width/2, app.height/2)
 
+def groceryOneScreen_onKeyPress(app, key):
+    onKeyPressHelper(app, key)
+
 # def groceryOneScreen_onMousePress(app, mouseX, mouseY):
 
+####################################################
+# groceryTwoScreen
+####################################################
+
+def groceryTwoScreen_redrawAll(app):
+    drawLabel('Order To-Go', app.width/2, app.height/2)
+
+def groceryTwoScreen_onKeyPress(app, key):
+    onKeyPressHelper(app, key)
+
+####################################################
+# groceryThreeScreen
+####################################################
+
+def groceryThreeScreen_redrawAll(app):
+    drawLabel('Small Talk', app.width/2, app.height/2)
+
+def groceryThreeScreen_onKeyPress(app, key):
+    onKeyPressHelper(app, key)
 
 ####################################################
 # main function
