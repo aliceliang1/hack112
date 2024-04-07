@@ -29,9 +29,8 @@ def onKeyPressHelper(app, key):
     # write the main logic here and just have them call this helper fn
     # You should add/edit some code here...
     if   key == 'm': setActiveScreen('setMapScreen')
-    elif key == 't': setActiveScreen('setThemeScreen')
+    elif key == 'g': setActiveScreen('setGroceryHomeScreen')
     elif key == '?': setActiveScreen('helpScreen')
-    elif key == 'p': setActiveScreen('playScreen')
 
 def drawScreenTitle(app, screenTitle):
     drawLabel('SuperSet!', app.width/2, 20, size=20, bold=True)
