@@ -28,7 +28,7 @@ def onKeyPressHelper(app, key):
     # Since every screen does the same thing on key presses, we can
     # write the main logic here and just have them call this helper fn
     # You should add/edit some code here...
-    if   key == 'd': setActiveScreen('setWelcomeScreen')
+    if   key == 'm': setActiveScreen('setMapScreen')
     elif key == 't': setActiveScreen('setThemeScreen')
     elif key == '?': setActiveScreen('helpScreen')
     elif key == 'p': setActiveScreen('playScreen')
