@@ -6,14 +6,14 @@ import random
 ####################################################
 
 def onAppStart(app):
-    app.width = 1000
+    app.width = 900
     app.height = 600
     app.stepsPerSecond = 10
     app.themes = ["Grocery"]
     app.themeIndex= 0
     app.currTheme = "Grocery"
     # photos
-    app.scottyUrl = "cmu://786056/30136545/Scotty's+Market.jpg"
+    app.scottyUrl = "https://www.cmu.edu/dining/news/2023/scottys-market-rendering_900x600-min.jpg"
     newGame(app)
 
 def newGame(app):
@@ -62,8 +62,14 @@ def mapScreen_onKeyPress(app, key):
 
 def groceryHomeScreen_redrawAll(app):
     drawScreenTitle(app, 'Grocery Screen')
-    drawImage(app.scottyUrl, 0, 0, 1000, 600)
-
+    drawImage(app.scottyUrl, 0, 0)
+    # drawRect(app.width/2 - 70, app.height/2 - 10, 140, 50, fill='white')
+    for i in range(3):
+        drawRect(app.width/2 - 100, 100*(i+2), 200, 80, fill='white', border='black')
+    drawLabel('Checkout', app.width/2, 100*2 + 40, size=24)
+    drawLabel('Order To-Go', app.width/2, 100*3+40, size=24)
+    drawLabel('Small Talk', app.width/2, 100*4+40, size=24)
+    # drawRect(app.width/2 - 70, app.height/2 )
     
 
 def groceryHomeScreen_onKeyPress(app, key):
@@ -75,7 +81,7 @@ def groceryHomeScreen_onKeyPress(app, key):
 ####################################################
 
 def main():
-    runAppWithScreens(initialScreen='Help Screen')
+    runAppWithScreens(initialScreen='helpScreen')
 
 main()
 
