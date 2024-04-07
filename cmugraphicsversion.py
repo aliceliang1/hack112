@@ -18,6 +18,9 @@ def onAppStart(app):
 
 def newGame(app):
     app.livesCount = 2
+    app.groceryHomeOneSelected = False
+    app.groceryHomeTwoSelected = False
+    app.groceryHomeThreeSelected = False
     app.winGame = False
     app.loseGame = False
     
@@ -86,7 +89,7 @@ def onMousePress(app, mouseX, mouseY):
           app.width/2-100 <= mouseX <= ((app.width/2)-100) + 200 and 
           (100*4) <= mouseY <= (100*4)+80):
         app.groceryHomeThreeSelected = True
-        setActiveScreen('groceryTwoScreen')
+        setActiveScreen('groceryThreeScreen')
 
 def groceryHomeScreen_onKeyPress(app, key):
     onKeyPressHelper(app, key)
@@ -94,6 +97,11 @@ def groceryHomeScreen_onKeyPress(app, key):
 ####################################################
 # groceryOneScreen
 ####################################################
+
+def groceryOneScreen_redrawAll(app):
+    drawLabel('Cashier', app.width/2, app.height/2)
+
+
 
 ####################################################
 # main function
